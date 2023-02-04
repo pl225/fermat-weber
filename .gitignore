@@ -1,0 +1,5 @@
+*.log
+*.lp
+*.out
+obj/*
+.vscode/*
