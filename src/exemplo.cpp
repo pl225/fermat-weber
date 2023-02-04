@@ -18,9 +18,9 @@ Instancia problemaUm() {
 
     arestas.push_back({4, 0});
     arestas.push_back({4, 3});
-    arestas.push_back({4, 5});
     arestas.push_back({5, 1});
     arestas.push_back({5, 2});
+    arestas.push_back({4, 5});
 
     return { coordenadas, arestas };
 }
@@ -32,9 +32,9 @@ Instancia problemaDois() {
 
     arestas.push_back({4, 0});
     arestas.push_back({4, 1});
-    arestas.push_back({4, 5});
     arestas.push_back({5, 2});
     arestas.push_back({5, 3});
+    arestas.push_back({4, 5});
 
     return { coordenadas, arestas };
 }

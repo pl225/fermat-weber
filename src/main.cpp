@@ -20,10 +20,14 @@ int main(int argc, char const *argv[]) {
     try	{
 		// Create an environment
 		GRBEnv env = GRBEnv(true);
-		env.set("LogFile", "augmentation.log");
+		env.set("LogFile", "fermat-weber.log");
 		env.start();
 
         GRBModel model = criarModelo(env, instancia.coordenadas, instancia.arestas);
+
+        model.write("model.lp");
+
+        model.optimize();
 
     } catch (GRBException e) {
 		std::cout << "Error code = " << e.getErrorCode() << std::endl;
