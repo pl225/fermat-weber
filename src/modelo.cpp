@@ -17,10 +17,10 @@ GRBModel criarModelo(
 
     GRBVar x[DIMENSAO][DIMENSAO];
 
-    x[0][0] = model.addVar(0, GRB_INFINITY, 0, GRB_CONTINUOUS, "x_{5,1}");
-    x[0][1] = model.addVar(0, GRB_INFINITY, 0, GRB_CONTINUOUS, "x_{5,2}");
-    x[1][0] = model.addVar(0, GRB_INFINITY, 0, GRB_CONTINUOUS, "x_{6,1}");
-    x[1][1] = model.addVar(0, GRB_INFINITY, 0, GRB_CONTINUOUS, "x_{6,2}");
+    x[0][0] = model.addVar(-GRB_INFINITY, GRB_INFINITY, 0, GRB_CONTINUOUS, "x_{5,1}");
+    x[0][1] = model.addVar(-GRB_INFINITY, GRB_INFINITY, 0, GRB_CONTINUOUS, "x_{5,2}");
+    x[1][0] = model.addVar(-GRB_INFINITY, GRB_INFINITY, 0, GRB_CONTINUOUS, "x_{6,1}");
+    x[1][1] = model.addVar(-GRB_INFINITY, GRB_INFINITY, 0, GRB_CONTINUOUS, "x_{6,2}");
 
     for (size_t i = 0; i < arestas.size() - 1; i++) {
         GRBQuadExpr expr = 0;
