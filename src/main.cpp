@@ -29,6 +29,11 @@ int main(int argc, char const *argv[]) {
 
         model.optimize();
 
+        std::cout << "x_{5,1} " << model.getVarByName("x_{5,1}").get(GRB_DoubleAttr_X) << std::endl;
+        std::cout << "x_{5,2} " << model.getVarByName("x_{5,2}").get(GRB_DoubleAttr_X) << std::endl;
+        std::cout << "x_{6,1} " << model.getVarByName("x_{6,1}").get(GRB_DoubleAttr_X) << std::endl;
+        std::cout << "x_{6,2} " << model.getVarByName("x_{6,2}").get(GRB_DoubleAttr_X) << std::endl;
+
     } catch (GRBException e) {
 		std::cout << "Error code = " << e.getErrorCode() << std::endl;
 		std::cout << e.getMessage() << std::endl;
