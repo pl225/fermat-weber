@@ -132,5 +132,13 @@ GRBModel criarModeloMaculan(
 
     criarVariaveisModeloMaculan(numS, numT, model, y, z, x, t);
 
+    for (int j = 0; j < numT; j++) {
+        GRBLinExpr expr = 0;
+        for (int i = 0; i < numS; i++) {
+            expr += y[i][j];
+        }
+        model.addConstr(expr == 1);
+    }
+
     return model;
 }
