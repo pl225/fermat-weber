@@ -80,19 +80,38 @@ GRBModel criarModeloMaculan(
     const int M = calcularM(coordenadas);
 
     std::vector<std::vector<GRBVar>> y, z;
+    std::vector<std::vector<std::vector<GRBVar>>> t;
 
     for (int i = 0; i < numS; i++) {
         y.push_back(std::vector<GRBVar>());
         z.push_back(std::vector<GRBVar>());
+        t.push_back(std::vector<std::vector<GRBVar>>());
         
         for (int j = 0; j < numT; j++) {
-            y[i].push_back(model.addVar(0, 1, 0, GRB_BINARY, "y_" + std::to_string(j + 1) + ',' + std::to_string(numT + i + 1)));
-            z[i].push_back(model.addVar(0, GRB_INFINITY, 1, GRB_CONTINUOUS, "z_" + std::to_string(j + 1) + ',' + std::to_string(numT + i + 1)));
+            std::string indexJ = std::to_string(j + 1), 
+                indexI = std::to_string(numT + i + 1);
+            
+            y[i].push_back(model.addVar(0, 1, 0, GRB_BINARY, "y_" + indexJ + ',' + indexI));
+            z[i].push_back(model.addVar(0, GRB_INFINITY, 1, GRB_CONTINUOUS, "z_" + indexJ + ',' + indexI));
+
+            t[i].push_back(std::vector<GRBVar>());
+            for (int k = 0; k < DIMENSAO; k++) {
+                t[i][j].push_back(model.addVar(-GRB_INFINITY, GRB_INFINITY, 0, GRB_CONTINUOUS, "t_" + indexJ + ',' + indexI + ',' + std::to_string(k + 1)));
+            }
         }
 
         for (int j = i + 1; j < numS; j++) {
-            y[i].push_back(model.addVar(0, 1, 0, GRB_BINARY, "y_" + std::to_string(numT + i + 1) + ',' + std::to_string(numT + j + 1)));
-            z[i].push_back(model.addVar(0, GRB_INFINITY, 1, GRB_CONTINUOUS, "z_" + std::to_string(numT + i + 1) + ',' + std::to_string(numT + j + 1)));
+            std::string indexJ = std::to_string(numT + j + 1), 
+                indexI = std::to_string(numT + i + 1);
+                
+            y[i].push_back(model.addVar(0, 1, 0, GRB_BINARY, "y_" + indexI + ',' + indexJ));
+            z[i].push_back(model.addVar(0, GRB_INFINITY, 1, GRB_CONTINUOUS, "z_" + indexI + ',' + indexJ));
+
+            t[i].push_back(std::vector<GRBVar>());
+            size_t index = t[i].size() - 1;
+            for (int k = 0; k < DIMENSAO; k++) {
+                t[i][index].push_back(model.addVar(-GRB_INFINITY, GRB_INFINITY, 0, GRB_CONTINUOUS, "t_" + indexI + ',' + indexJ + ',' + std::to_string(k + 1)));
+            }
         }
     }
     
