@@ -79,17 +79,20 @@ GRBModel criarModeloMaculan(
     int numS = numT - 2;
     const int M = calcularM(coordenadas);
 
-    std::vector<std::vector<GRBVar>> y;
+    std::vector<std::vector<GRBVar>> y, z;
 
     for (int i = 0; i < numS; i++) {
         y.push_back(std::vector<GRBVar>());
+        z.push_back(std::vector<GRBVar>());
         
         for (int j = 0; j < numT; j++) {
             y[i].push_back(model.addVar(0, 1, 0, GRB_BINARY, "y_" + std::to_string(j + 1) + ',' + std::to_string(numT + i + 1)));
+            z[i].push_back(model.addVar(0, GRB_INFINITY, 1, GRB_CONTINUOUS, "z_" + std::to_string(j + 1) + ',' + std::to_string(numT + i + 1)));
         }
 
         for (int j = i + 1; j < numS; j++) {
             y[i].push_back(model.addVar(0, 1, 0, GRB_BINARY, "y_" + std::to_string(numT + i + 1) + ',' + std::to_string(numT + j + 1)));
+            z[i].push_back(model.addVar(0, GRB_INFINITY, 1, GRB_CONTINUOUS, "z_" + std::to_string(numT + i + 1) + ',' + std::to_string(numT + j + 1)));
         }
     }
     
