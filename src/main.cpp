@@ -3,9 +3,9 @@
 
 int main(int argc, char const *argv[]) {
 
-    if (argc < 2) {
+    if (argc < 3) {
         std::cout << "[Erro] - numero de parametros invalidos" << std::endl;
-		std::cout << "[Uso] - ./exe instancia" << std::endl;
+		std::cout << "[Uso] - ./exe instancia modelo" << std::endl;
 		return -1;
     }
 
@@ -23,7 +23,9 @@ int main(int argc, char const *argv[]) {
 		env.set("LogFile", "fermat-weber.log");
 		env.start();
 
-        GRBModel model = criarModelo(env, instancia.coordenadas, instancia.arestas);
+        GRBModel model = atoi(argv[2]) == 1
+            ? criarModelo(env, instancia.coordenadas, instancia.arestas)
+            : criarModeloMaculan(env, 4, instancia.coordenadas);
 
         model.write("model.lp");
 

@@ -10,4 +10,10 @@ GRBModel criarModelo(
     std::vector<Aresta> &arestas
 );
 
+GRBModel criarModeloMaculan(
+    GRBEnv &env,
+    int numT,
+    std::vector<Coordenada> &coordenadas  
+);
+
 #endif

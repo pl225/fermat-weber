@@ -1,4 +1,5 @@
 #include "modelo.h"
+#include <math.h>
 
 #define DIMENSAO 2
 
@@ -46,5 +47,37 @@ GRBModel criarModelo(
 
     model.addQConstr(d[4] * d[4] >= expr, "d_{4,5}");
 
+    return model;
+}
+
+int calcularM(
+    std::vector<Coordenada> &coordenadas
+) {
+    double maior = 0;
+    for (size_t i = 0; i < coordenadas.size(); i++) {
+        for (size_t j = i + 1; j < coordenadas.size(); j++) {
+            double distancia = sqrt(
+                pow(coordenadas[j].first - coordenadas[i].first, 2)
+                + pow(coordenadas[j].second - coordenadas[i].second, 2)
+            );
+
+            if (distancia > maior) {
+                maior = distancia;
+            }
+        }
+    }
+
+    return (int) ceil(maior);
+}
+
+GRBModel criarModeloMaculan(
+    GRBEnv &env, 
+    int numT,
+    std::vector<Coordenada> &coordenadas
+) {
+    GRBModel model = GRBModel(env);
+    int numS = numT - 2;
+    const int M = calcularM(coordenadas);
+    
     return model;
 }
