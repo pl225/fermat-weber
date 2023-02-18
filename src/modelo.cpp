@@ -190,24 +190,13 @@ void criarRestricoesTModeloMaculan(
     }
 }
 
-GRBModel criarModeloMaculan(
-    GRBEnv &env, 
+void criarRestricoesZModeloMaculan(
+    int numS,
     int numT,
-    std::vector<Coordenada> &coordenadas
+    GRBModel &model,
+    std::vector<std::vector<GRBVar>> &z,
+    std::vector<std::vector<std::vector<GRBVar>>> &t
 ) {
-    GRBModel model = GRBModel(env);
-    const int numS = numT - 2;
-    const int M = calcularM(coordenadas);
-
-    std::vector<std::vector<GRBVar>> y, z, x;
-    std::vector<std::vector<std::vector<GRBVar>>> t;
-
-    criarVariaveisModeloMaculan(numS, numT, model, y, z, x, t);
-
-    criarRestricoesYModeloMaculan(numS, numT, model, y);
-
-    criarRestricoesTModeloMaculan(numS, numT, model, M, coordenadas, y, x, t);
-
     for (size_t i = 0; i < z.size(); i++) {
         for (size_t j = 0; j < z[i].size(); j++) {
             GRBQuadExpr expr = 0;
@@ -228,6 +217,27 @@ GRBModel criarModeloMaculan(
             model.addQConstr(z[i][indexJ] * z[i][indexJ] >= expr);
         }
     }
+}
+
+GRBModel criarModeloMaculan(
+    GRBEnv &env, 
+    int numT,
+    std::vector<Coordenada> &coordenadas
+) {
+    GRBModel model = GRBModel(env);
+    const int numS = numT - 2;
+    const int M = calcularM(coordenadas);
+
+    std::vector<std::vector<GRBVar>> y, z, x;
+    std::vector<std::vector<std::vector<GRBVar>>> t;
+
+    criarVariaveisModeloMaculan(numS, numT, model, y, z, x, t);
+
+    criarRestricoesYModeloMaculan(numS, numT, model, y);
+
+    criarRestricoesTModeloMaculan(numS, numT, model, M, coordenadas, y, x, t);
+
+    criarRestricoesZModeloMaculan(numS, numT, model, z, t);
 
     return model;
 }
