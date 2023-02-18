@@ -181,6 +181,7 @@ void criarRestricoesTModeloMaculan(
             for (int k = 0; k < DIMENSAO; k++) {
                 int indexJ = numT + i;
                 model.addConstr((-1) * M * y[i][indexJ] <= t[i][indexJ][k]);
+                model.addConstr(t[i][indexJ][k] <= M * y[i][indexJ]);
 
                 model.addConstr((-1) * M * (1 - y[i][indexJ]) + (x[i][k] - x[j][k]) <= t[i][indexJ][k]);
                 model.addConstr(t[i][indexJ][k] <= (x[i][k] - x[j][k]) + (1 - y[i][indexJ] * M));
@@ -197,7 +198,6 @@ GRBModel criarModeloMaculan(
     GRBModel model = GRBModel(env);
     const int numS = numT - 2;
     const int M = calcularM(coordenadas);
-    const int totalP = numT + numS;
 
     std::vector<std::vector<GRBVar>> y, z, x;
     std::vector<std::vector<std::vector<GRBVar>>> t;
@@ -215,6 +215,17 @@ GRBModel criarModeloMaculan(
                 expr += t[i][j][k] * t[i][j][k];
             }
             model.addQConstr(z[i][j] * z[i][j] >= expr);
+        }
+    }
+
+    for (int i = 0; i < numS; i++) {
+        for (int j = i + 1; j < numS; j++) {
+            GRBQuadExpr expr = 0;
+            int indexJ = numT + i;
+            for (int k = 0; k < DIMENSAO; k++) {
+                expr += t[i][indexJ][k] * t[i][indexJ][k];
+            }
+            model.addQConstr(z[i][indexJ] * z[i][indexJ] >= expr);
         }
     }
 
