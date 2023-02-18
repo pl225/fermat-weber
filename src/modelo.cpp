@@ -118,21 +118,12 @@ void criarVariaveisModeloMaculan(
     }
 }
 
-GRBModel criarModeloMaculan(
-    GRBEnv &env, 
+void criarRestricoesYModeloMaculan(
+    int numS,
     int numT,
-    std::vector<Coordenada> &coordenadas
+    GRBModel &model,
+    std::vector<std::vector<GRBVar>> &y
 ) {
-    GRBModel model = GRBModel(env);
-    const int numS = numT - 2;
-    const int M = calcularM(coordenadas);
-    const int totalP = numT + numS;
-
-    std::vector<std::vector<GRBVar>> y, z, x;
-    std::vector<std::vector<std::vector<GRBVar>>> t;
-
-    criarVariaveisModeloMaculan(numS, numT, model, y, z, x, t);
-
     for (int j = 0; j < numT; j++) {
         GRBLinExpr expr = 0;
         for (int i = 0; i < numS; i++) {
@@ -157,6 +148,24 @@ GRBModel criarModeloMaculan(
         }
         model.addConstr(exprI == 3);
     }
+}
+
+GRBModel criarModeloMaculan(
+    GRBEnv &env, 
+    int numT,
+    std::vector<Coordenada> &coordenadas
+) {
+    GRBModel model = GRBModel(env);
+    const int numS = numT - 2;
+    const int M = calcularM(coordenadas);
+    const int totalP = numT + numS;
+
+    std::vector<std::vector<GRBVar>> y, z, x;
+    std::vector<std::vector<std::vector<GRBVar>>> t;
+
+    criarVariaveisModeloMaculan(numS, numT, model, y, z, x, t);
+
+    criarRestricoesYModeloMaculan(numS, numT, model, y);
 
     return model;
 }
