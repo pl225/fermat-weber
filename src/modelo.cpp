@@ -113,7 +113,7 @@ void criarVariaveisModeloMaculan(
         }
 
         for (int k = 0; k < DIMENSAO; k++) {
-            x[i].push_back(model.addVar(-GRB_INFINITY, GRB_INFINITY, 0, GRB_CONTINUOUS, "x_" + std::to_string(numT + i + 1) + ',' + std::to_string(k + 1)));
+            x[i].push_back(model.addVar(-GRB_INFINITY, GRB_INFINITY, 0, GRB_CONTINUOUS, "x_{" + std::to_string(numT + i + 1) + ',' + std::to_string(k + 1) + "}"));
         }
     }
 }
@@ -184,7 +184,7 @@ void criarRestricoesTModeloMaculan(
                 model.addConstr(t[i][indexJ][k] <= M * y[i][indexJ]);
 
                 model.addConstr((-1) * M * (1 - y[i][indexJ]) + (x[i][k] - x[j][k]) <= t[i][indexJ][k]);
-                model.addConstr(t[i][indexJ][k] <= (x[i][k] - x[j][k]) + (1 - y[i][indexJ] * M));
+                model.addConstr(t[i][indexJ][k] <= (x[i][k] - x[j][k]) + (1 - y[i][indexJ]) * M);
             }
         }
     }
