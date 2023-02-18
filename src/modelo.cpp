@@ -132,7 +132,7 @@ void criarRestricoesYModeloMaculan(
         model.addConstr(expr == 1);
     }
 
-    GRBLinExpr expr = 0;
+    GRBLinExpr expr = 0; // poderá ser necessário modificar para melhorar generalização
     for (int i = 0; i < numS - 1; i++) {
         for (size_t j = numT; j < y[i].size(); j++) {
             expr += y[i][j];
@@ -176,7 +176,7 @@ void criarRestricoesTModeloMaculan(
         }
     }
 
-    for (int i = 0; i < numS; i++) {
+    for (int i = 0; i < numS; i++) { // poderá ser necessário modificar para melhorar generalização
         for (int j = i + 1; j < numS; j++) {
             for (int k = 0; k < DIMENSAO; k++) {
                 int indexJ = numT + i;
@@ -207,7 +207,7 @@ void criarRestricoesZModeloMaculan(
         }
     }
 
-    for (int i = 0; i < numS; i++) {
+    for (int i = 0; i < numS; i++) { // poderá ser necessário modificar para melhorar generalização
         for (int j = i + 1; j < numS; j++) {
             GRBQuadExpr expr = 0;
             int indexJ = numT + i;
@@ -222,7 +222,7 @@ void criarRestricoesZModeloMaculan(
 GRBModel criarModeloMaculan(
     GRBEnv &env, 
     int numT,
-    std::vector<Coordenada> &coordenadas
+    std::vector<Coordenada> &coordenadas // poderá ser necessário mudar para vetor de coordenadas
 ) {
     GRBModel model = GRBModel(env);
     const int numS = numT - 2;
