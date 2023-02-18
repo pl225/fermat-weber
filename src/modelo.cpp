@@ -157,7 +157,6 @@ void criarRestricoesTModeloMaculan(
     int M,
     std::vector<Coordenada> &coordenadas,
     std::vector<std::vector<GRBVar>> &y, 
-    std::vector<std::vector<GRBVar>> &z, 
     std::vector<std::vector<GRBVar>> &x,
     std::vector<std::vector<std::vector<GRBVar>>> &t
 ) {
@@ -207,7 +206,17 @@ GRBModel criarModeloMaculan(
 
     criarRestricoesYModeloMaculan(numS, numT, model, y);
 
-    criarRestricoesTModeloMaculan(numS, numT, model, M, coordenadas, y, z, x, t);
+    criarRestricoesTModeloMaculan(numS, numT, model, M, coordenadas, y, x, t);
+
+    for (size_t i = 0; i < z.size(); i++) {
+        for (size_t j = 0; j < z[i].size(); j++) {
+            GRBQuadExpr expr = 0;
+            for (int k = 0; k < DIMENSAO; k++) {
+                expr += t[i][j][k] * t[i][j][k];
+            }
+            model.addQConstr(z[i][j] * z[i][j] >= expr);
+        }
+    }
 
     return model;
 }
