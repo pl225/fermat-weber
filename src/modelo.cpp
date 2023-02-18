@@ -150,6 +150,46 @@ void criarRestricoesYModeloMaculan(
     }
 }
 
+void criarRestricoesTModeloMaculan(
+    int numS,
+    int numT,
+    GRBModel &model,
+    int M,
+    std::vector<Coordenada> &coordenadas,
+    std::vector<std::vector<GRBVar>> &y, 
+    std::vector<std::vector<GRBVar>> &z, 
+    std::vector<std::vector<GRBVar>> &x,
+    std::vector<std::vector<std::vector<GRBVar>>> &t
+) {
+    for (int i = 0; i < numS; i++) {
+        for (int j = 0; j < numT; j++) {
+            for (int k = 0; k < DIMENSAO; k++) {
+                model.addConstr((-1) * M * y[i][j] <= t[i][j][k]);
+                model.addConstr(t[i][j][k] <= M * y[i][j]);
+
+                double coordenada = k == 0 
+                    ? coordenadas[j].first 
+                    : coordenadas[j].second;
+
+                model.addConstr((-1) * M * (1 - y[i][j]) + (x[i][k] - coordenada) <= t[i][j][k]);
+                model.addConstr(t[i][j][k] <= (x[i][k] - coordenada) + M * (1 - y[i][j]));
+            }
+        }
+    }
+
+    for (int i = 0; i < numS; i++) {
+        for (int j = i + 1; j < numS; j++) {
+            for (int k = 0; k < DIMENSAO; k++) {
+                int indexJ = numT + i;
+                model.addConstr((-1) * M * y[i][indexJ] <= t[i][indexJ][k]);
+
+                model.addConstr((-1) * M * (1 - y[i][indexJ]) + (x[i][k] - x[j][k]) <= t[i][indexJ][k]);
+                model.addConstr(t[i][indexJ][k] <= (x[i][k] - x[j][k]) + (1 - y[i][indexJ] * M));
+            }
+        }
+    }
+}
+
 GRBModel criarModeloMaculan(
     GRBEnv &env, 
     int numT,
@@ -166,6 +206,8 @@ GRBModel criarModeloMaculan(
     criarVariaveisModeloMaculan(numS, numT, model, y, z, x, t);
 
     criarRestricoesYModeloMaculan(numS, numT, model, y);
+
+    criarRestricoesTModeloMaculan(numS, numT, model, M, coordenadas, y, z, x, t);
 
     return model;
 }
