@@ -199,15 +199,15 @@ void criarRestricoesTModeloMaculan(
         }
     }
 
-    for (int i = 0; i < numS; i++) { // poderá ser necessário modificar para melhorar generalização
-        for (int j = i + 1; j < numS; j++) {
+    for (int i = 0; i < numS; i++) {
+        for (int j = numT, indexJ = i + 1; j < y[i].size(); j++, indexJ++) {
             for (int k = 0; k < DIMENSAO; k++) {
-                int indexJ = numT + i;
-                model.addConstr((-1) * M * y[i][indexJ] <= t[i][indexJ][k]);
-                model.addConstr(t[i][indexJ][k] <= M * y[i][indexJ]);
+                
+                model.addConstr((-1) * M * y[i][j] <= t[i][j][k]);
+                model.addConstr(t[i][j][k] <= M * y[i][j]);
 
-                model.addConstr((-1) * M * (1 - y[i][indexJ]) + (x[i][k] - x[j][k]) <= t[i][indexJ][k]);
-                model.addConstr(t[i][indexJ][k] <= (x[i][k] - x[j][k]) + (1 - y[i][indexJ]) * M);
+                model.addConstr((-1) * M * (1 - y[i][j]) + (x[i][k] - x[indexJ][k]) <= t[i][j][k]);
+                model.addConstr(t[i][j][k] <= (x[i][k] - x[indexJ][k]) + (1 - y[i][j]) * M);
             }
         }
     }
@@ -231,13 +231,13 @@ void criarRestricoesZModeloMaculan(
     }
 
     for (int i = 0; i < numS; i++) { // poderá ser necessário modificar para melhorar generalização
-        for (int j = i + 1; j < numS; j++) {
+        for (int j = numT; j < t[j].size(); j++) {
             GRBQuadExpr expr = 0;
             int indexJ = numT + i;
             for (int k = 0; k < DIMENSAO; k++) {
-                expr += t[i][indexJ][k] * t[i][indexJ][k];
+                expr += t[i][j][k] * t[i][j][k];
             }
-            model.addQConstr(z[i][indexJ] * z[i][indexJ] >= expr);
+            model.addQConstr(z[i][j] * z[i][j] >= expr);
         }
     }
 }
@@ -258,9 +258,9 @@ GRBModel criarModeloMaculan(
 
     criarRestricoesYModeloMaculan(numS, numT, model, y);
 
-    //criarRestricoesTModeloMaculan(numS, numT, model, M, coordenadas, y, x, t);
+    criarRestricoesTModeloMaculan(numS, numT, model, M, coordenadas, y, x, t);
 
-    //criarRestricoesZModeloMaculan(numS, numT, model, z, t);
+    criarRestricoesZModeloMaculan(numS, numT, model, z, t);
 
     return model;
 }
