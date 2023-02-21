@@ -41,6 +41,13 @@ int main(int argc, char const *argv[]) {
             }
         }
 
+        GRBVar* vars = model.getVars();
+        for (int i = 0; i < model.get(GRB_IntAttr_NumVars); i++) {
+            if (vars[i].get(GRB_StringAttr_VarName).at(0) == 'y' && vars[i].get(GRB_DoubleAttr_X) > 0) {
+                std::cout << vars[i].get(GRB_StringAttr_VarName) << " = " << vars[i].get(GRB_DoubleAttr_X) << std::endl;
+            }
+        }
+
     } catch (GRBException e) {
 		std::cout << "Error code = " << e.getErrorCode() << std::endl;
 		std::cout << e.getMessage() << std::endl;
