@@ -11,5 +11,6 @@ typedef struct instancia {
 
 Instancia problemaUm();
 Instancia problemaDois();
+Instancia problemaTres();
 
 #endif

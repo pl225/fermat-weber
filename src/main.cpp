@@ -13,8 +13,10 @@ int main(int argc, char const *argv[]) {
 
     if (atoi(argv[1]) == 1) {
         instancia = problemaUm();
-    } else {
+    } else if (atoi(argv[1]) == 2) {
         instancia = problemaDois();
+    } else {
+        instancia = problemaTres();
     }
     
     try	{
@@ -25,7 +27,7 @@ int main(int argc, char const *argv[]) {
 
         GRBModel model = atoi(argv[2]) == 1
             ? criarModelo(env, instancia.coordenadas, instancia.arestas)
-            : criarModeloMaculan(env, 4, instancia.coordenadas);
+            : criarModeloMaculan(env, instancia.coordenadas.size(), instancia.coordenadas);
 
         model.write("model.lp");
 
