@@ -132,7 +132,22 @@ void criarRestricoesYModeloMaculan(
         model.addConstr(expr == 1);
     }
 
-    GRBLinExpr expr = 0; // poderá ser necessário modificar para melhorar generalização
+    for (int indS = 0; indS < numS - 1; indS++) {
+        GRBLinExpr expr = 0;
+        int numVariaveis = indS + 1, qtdVariaveis = 0;
+        int linha = 0, coluna = numT + indS;        
+
+        while (qtdVariaveis < numVariaveis) {
+            expr += y[linha][coluna];
+            coluna--;
+            linha++;
+            qtdVariaveis++;
+        }
+
+        model.addConstr(expr == 1);        
+    }
+
+    /*GRBLinExpr expr = 0; // poderá ser necessário modificar para melhorar generalização
     for (int i = 0; i < numS - 1; i++) {
         for (size_t j = numT; j < y[i].size(); j++) {
             expr += y[i][j];
@@ -147,7 +162,7 @@ void criarRestricoesYModeloMaculan(
             exprI += y[i][j];
         }
         model.addConstr(exprI == 3);
-    }
+    }*/
 }
 
 void criarRestricoesTModeloMaculan(
@@ -235,9 +250,9 @@ GRBModel criarModeloMaculan(
 
     criarRestricoesYModeloMaculan(numS, numT, model, y);
 
-    criarRestricoesTModeloMaculan(numS, numT, model, M, coordenadas, y, x, t);
+    //criarRestricoesTModeloMaculan(numS, numT, model, M, coordenadas, y, x, t);
 
-    criarRestricoesZModeloMaculan(numS, numT, model, z, t);
+    //criarRestricoesZModeloMaculan(numS, numT, model, z, t);
 
     return model;
 }
