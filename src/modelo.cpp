@@ -118,6 +118,25 @@ void criarVariaveisModeloMaculan(
     }
 }
 
+GRBLinExpr getExprMenorY(
+    int indS,
+    int numT,
+    std::vector<std::vector<GRBVar>> &y
+) {
+    GRBLinExpr expr = 0;
+    int numVariaveis = indS + 1, qtdVariaveis = 0;
+    int linha = 0, coluna = numT + indS;        
+
+    while (qtdVariaveis < numVariaveis) {
+        expr += y[linha][coluna];
+        coluna--;
+        linha++;
+        qtdVariaveis++;
+    }
+
+    return expr;
+}
+
 void criarRestricoesYModeloMaculan(
     int numS,
     int numT,
@@ -133,36 +152,25 @@ void criarRestricoesYModeloMaculan(
     }
 
     for (int indS = 0; indS < numS - 1; indS++) {
-        GRBLinExpr expr = 0;
-        int numVariaveis = indS + 1, qtdVariaveis = 0;
-        int linha = 0, coluna = numT + indS;        
-
-        while (qtdVariaveis < numVariaveis) {
-            expr += y[linha][coluna];
-            coluna--;
-            linha++;
-            qtdVariaveis++;
-        }
-
+        GRBLinExpr expr = getExprMenorY(indS, numT, y);
         model.addConstr(expr == 1);        
     }
 
-    /*GRBLinExpr expr = 0; // poderá ser necessário modificar para melhorar generalização
-    for (int i = 0; i < numS - 1; i++) {
-        for (size_t j = numT; j < y[i].size(); j++) {
-            expr += y[i][j];
-        }
-    }
-    model.addConstr(expr == 1);
-
-    for (int i = 0; i < numS; i++) {
-        GRBLinExpr exprI = expr;
-
+    for (int indS = 0; indS < numS; indS++) {
+        GRBLinExpr expr = 0;
         for (int j = 0; j < numT; j++) {
-            exprI += y[i][j];
+            expr += y[indS][j];
         }
-        model.addConstr(exprI == 3);
-    }*/
+
+        if (indS > 0) {
+            expr += getExprMenorY(indS - 1, numT, y);
+        }
+
+        for (int j = numT; j < y[indS].size(); j++) {
+            expr += y[indS][j];
+        }
+        model.addConstr(expr == 3);
+    }
 }
 
 void criarRestricoesTModeloMaculan(
