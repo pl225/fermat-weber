@@ -230,7 +230,7 @@ void criarRestricoesZModeloMaculan(
         }
     }
 
-    for (int i = 0; i < numS; i++) { // poderá ser necessário modificar para melhorar generalização
+    for (int i = 0; i < numS; i++) {
         for (int j = numT; j < t[j].size(); j++) {
             GRBQuadExpr expr = 0;
             int indexJ = numT + i;

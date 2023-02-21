@@ -33,10 +33,13 @@ int main(int argc, char const *argv[]) {
 
         model.optimize();
 
-        std::cout << "x_{5,1} " << model.getVarByName("x_{5,1}").get(GRB_DoubleAttr_X) << std::endl;
-        std::cout << "x_{5,2} " << model.getVarByName("x_{5,2}").get(GRB_DoubleAttr_X) << std::endl;
-        std::cout << "x_{6,1} " << model.getVarByName("x_{6,1}").get(GRB_DoubleAttr_X) << std::endl;
-        std::cout << "x_{6,2} " << model.getVarByName("x_{6,2}").get(GRB_DoubleAttr_X) << std::endl;
+        int numPontos = instancia.coordenadas.size();
+        for (int i = 0; i < instancia.coordenadas.size() - 2; i++) {
+            for (int j = 0; j < 2; j++) {  
+                std::string varName = "x_{" + std::to_string(numPontos + i + 1) + ',' + std::to_string(j + 1) + '}';
+                std::cout << varName << ' ' << model.getVarByName(varName).get(GRB_DoubleAttr_X) << std::endl;        
+            }
+        }
 
     } catch (GRBException e) {
 		std::cout << "Error code = " << e.getErrorCode() << std::endl;
